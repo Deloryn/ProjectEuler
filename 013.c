@@ -2,45 +2,31 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-int charToInt(char digit) {
-  return digit - '0';
+void addTwoCharDigits(char strSum[2], char digitOne, char digitTwo) {
+  int sum = (digitOne-'0') + (digitTwo-'0');
+  strSum[0] = (sum/10) + '0';
+  strSum[1] = (sum%10) + '0';
 }
 
-char* addTwoCharDigits(char charDigitOne, char charDigitTwo) {
-  int intDigitOne = charToInt(charDigitOne);
-  int intDigitTwo = charToInt(charDigitTwo);
-  int sum = intDigitOne + intDigitTwo;
-  char leftDigit = (sum/10) + '0';
-  char rightDigit = (sum%10) + '0';
-  char *strSum = malloc(2);
-  strSum[0] = leftDigit;
-  strSum[1] = rightDigit;
-  return strSum;
-}
-
-char* addTwoChars(char numberOne[53], char numberTwo[53]) {
-  char* newNumber = malloc(53);
-  char* twoDigitsSum;
+void addTwoChars(char newNumber[53], char numberOne[53], char numberTwo[53]) {
   char tempDigit;
+  char twoDigitsSum[2];
   for(int i=52; i>=0; i--) {
-    twoDigitsSum = addTwoCharDigits(numberOne[i], numberTwo[i]);
+    addTwoCharDigits(twoDigitsSum, numberOne[i], numberTwo[i]);
     newNumber[i] = twoDigitsSum[1];
     tempDigit = twoDigitsSum[0];
-    free(twoDigitsSum);
     if(tempDigit!='0') {
       for(int j=i-1; j>=0; j--) {
-        twoDigitsSum = addTwoCharDigits(numberOne[j], tempDigit);
+        addTwoCharDigits(twoDigitsSum, numberOne[j], tempDigit);
         numberOne[j] = twoDigitsSum[1];
         tempDigit = twoDigitsSum[0];
-        free(twoDigitsSum);
         if(tempDigit=='0') break;
       }
     }
   }
-  return newNumber;
 }
 
-void printResult(char *sumOfNumbers) {
+void printResult(char sumOfNumbers[53]) {
   printf("Result (first 10 digits): ");
   bool isDigitStart = false;
   int counter = 0;
@@ -73,20 +59,18 @@ void main() {
     }
   }
 
-  char *sumOfNumbers = malloc(53);
+  char sumOfNumbers[53];
   for(int i=0; i<53; i++) {
     sumOfNumbers[i] = '0';
   }
 
-  char *sumOfTwoNumbers;
+  char sumOfTwoNumbers[53];
   for(int i=0; i<100; i++) {
-    sumOfTwoNumbers = addTwoChars(sumOfNumbers, numbers[i]);
+    addTwoChars(sumOfTwoNumbers, sumOfNumbers, numbers[i]);
     for(int k=0; k<53; k++) {
       sumOfNumbers[k] = sumOfTwoNumbers[k];
     }
-    free(sumOfTwoNumbers);
   }
 
   printResult(sumOfNumbers);
-  free(sumOfNumbers);
 }
